@@ -1,0 +1,28 @@
+{
+    "name": "mubat/yii2-inherit-model-behavior",
+    "description": "yii2 behavior to connect inherit ActiveRecord",
+    "type": "yii2-extension",
+    "keywords": ["yii2", "behavior", "inherit", "model"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oleg Sergienko",
+            "email": "sergienko.oleg.92@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/mubat/yii2-inherit-model-behavior/issues",
+        "source": "https://github.com/mubat/yii2-inherit-model-behavior/"
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.6",
+        "yiisoft/yii2": "^2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "sergin\\yii2\\behaviors\\": "src"
+        }
+    }
+}
