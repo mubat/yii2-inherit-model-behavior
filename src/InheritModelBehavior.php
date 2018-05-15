@@ -45,6 +45,9 @@ class InheritModelBehavior extends Behavior
     /** @var  ActiveRecord */
     protected $_inheritModel;
 
+    /** @var bool is need to parse simple options like 'bar' instead of 'Foo[bar]'at request */
+    public $simpleRequest = false;
+
     /** @inheritDoc
      * @throws \yii\base\InvalidConfigException
      */
@@ -87,13 +90,23 @@ class InheritModelBehavior extends Behavior
     /**
      * @param $request \yii\web\Request
      *
-     * @return array parsed options values for inherit model.
+     * @return array parsed options values for inherit model. Example of simple request:
+     *  [
+     *      'id' => 213,
+     *      'title' => 'Lorem ipsum dolor",
+     *      'description' => 'Lorem impsum dolor sit amet',
+     *  ]
      * @throws \ReflectionException
      */
     protected function parseIncomingData($request)
     {
         if (!(Yii::$app->request instanceof Request)) {
             return null; // skip if not web
+        }
+
+        if ($this->simpleRequest) {
+            $postData = $request->post();
+            return empty($postData) ? $request->get() : $postData;
         }
 
         $class = (new ReflectionClass($this->dependClass))->getShortName();
@@ -112,13 +125,11 @@ class InheritModelBehavior extends Behavior
 
     public function save()
     {
-        if ($this->inheritModel) {
-            $isSaved = $this->inheritModel->save();
-            if ($isSaved) {
-                $this->owner->{$this->linkAttribute} = $this->inheritModel->{$this->primaryKeyName};
-            }
+        $isSaved = true;
+        if ($this->inheritModel && $isSaved = $this->inheritModel->save()) {
+            $this->owner->{$this->linkAttribute} = $this->inheritModel->{$this->primaryKeyName};
         }
-        return;
+        return $isSaved;
     }
 
     /**

@@ -3,6 +3,27 @@ Use this behavior to connect inherit ActiveRecord with (one-to-many relation)
 
 In parent ActiveRecord should be column that uses to store ID of inherit ActiveRecord.
 
+Extension supports 2 request formats:
+    
+* default Yii2 input data, like:
+```php
+//$_POST[]
+[
+    'Object' => [
+        'option_1' => 'value',
+        'option_2' => 'another value',
+    ]
+]
+```
+* simple input names (usable for API), like:
+```php
+//$_POST[]
+[
+    'option_1' => 'value',
+    'option_2' => 'another value',
+]
+```
+
 # Installation
 
 
