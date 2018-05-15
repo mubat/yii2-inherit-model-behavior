@@ -3,6 +3,7 @@
 namespace sergin\yii2\behaviors;
 
 
+use ReflectionClass;
 use Yii;
 use yii\base\Behavior;
 use yii\base\InvalidConfigException;
@@ -29,6 +30,7 @@ class InheritModelBehavior extends Behavior
      * @var ActiveRecord method
      */
     public $relationMethod;
+
     public $primaryKeyName = 'id';
     public $linkAttribute = 'inherit_id';
     /** @var  boolean Is depend class object should be initialize when no one items present */
@@ -46,8 +48,10 @@ class InheritModelBehavior extends Behavior
         if (empty($this->dependClass) && empty($this->relation)) {
             throw new InvalidConfigException('$dependClass and $relation should be published for DynamicClassBehavior');
         }
+        if (empty($this->relationMethod)) {
+            $this->relationMethod = 'get' . ucfirst($this->relation);
+        }
     }
-
 
     /** @inheritDoc */
     public function events()
@@ -57,30 +61,35 @@ class InheritModelBehavior extends Behavior
             ActiveRecord::EVENT_AFTER_VALIDATE => 'validate',
             ActiveRecord::EVENT_BEFORE_INSERT => 'save',
             ActiveRecord::EVENT_BEFORE_UPDATE => 'save',
-            ActiveRecord::EVENT_BEFORE_DELETE => 'getItemsList',
             ActiveRecord::EVENT_BEFORE_DELETE => 'delete',
         ];
     }
 
     /**
-     * @return bool is inheritModel load request data
+     * @return bool is inherit model load successfully (or true if no model exist)
      * @throws \ReflectionException
      */
     public function load()
     {
-        $request = Yii::$app->request;
-        if (!($request instanceof Request)) {
-            return true;
+        $data = $this->parseIncomingData(Yii::$app->request);
+        return !empty($data) && $this->inheritModel ? $this->inheritModel->load($data, '') : true;
+    }
+
+    /**
+     * @param $request \yii\web\Request
+     *
+     * @return array parsed options values for inherit model.
+     * @throws \ReflectionException
+     */
+    protected function parseIncomingData($request)
+    {
+        if (!(Yii::$app->request instanceof Request)) {
+            return null; // skip if not web
         }
 
-        $class = (new \ReflectionClass($this->dependClass))->getShortName();
-        $data = $request->post($class) ?? $request->get($class);
-
-        if (empty($data)) {
-            return true;
-        }
-
-        return $this->inheritModel ? $this->inheritModel->load($data, '') : true;
+        $class = (new ReflectionClass($this->dependClass))->getShortName();
+        $postData = $request->post($class);
+        return empty($postData) ? $request->get($class) : $postData;
     }
 
     public function validate()
