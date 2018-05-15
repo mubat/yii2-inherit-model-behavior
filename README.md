@@ -14,15 +14,15 @@ or add "mubat/yii2-inherit-model-behavior": "~1.0" to the require section of you
 
 
 ## Usage examples
-* Simple usage:
+* Usage:
 ```php
     public function behaviors()
     {
         $behaviors = parent::behaviors();
         $behaviors['image'] = [
             'class' => InheritModelBehavior::class,
-            'dependClass' => Image::class,
-            'virtualOption' => 'image',
+            'dependClass' => Image::class, //required
+            'virtualOption' => 'image', //required
             'linkAttribute' => 'image_id',
             'relationMethod' => 'savedImage',
         ];
