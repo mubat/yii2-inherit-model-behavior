@@ -22,7 +22,7 @@ or add "mubat/yii2-inherit-model-behavior": "~1.0" to the require section of you
         $behaviors['image'] = [
             'class' => InheritModelBehavior::class,
             'dependClass' => Image::class,
-            'relation' => 'image',
+            'virtualOption' => 'image',
             'linkAttribute' => 'image_id',
             'relationMethod' => 'savedImage',
         ];

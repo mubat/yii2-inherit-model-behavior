@@ -25,10 +25,11 @@ class InheritModelBehavior extends Behavior
      * or closure that call after object init (created object will set as first closure argument)
      */
     public $dependClassInitConfig = [];
-    public $relation;
-    /**
-     * @var ActiveRecord method
-     */
+
+    /** @var string option name that will be use */
+    public $virtualOption;
+
+    /** @var ActiveRecord option in class that contains already saved related objects. By default, ActiveRecord getter */
     public $relationMethod;
 
     public $primaryKeyName = 'id';
@@ -45,11 +46,11 @@ class InheritModelBehavior extends Behavior
     public function init()
     {
         parent::init();
-        if (empty($this->dependClass) && empty($this->relation)) {
-            throw new InvalidConfigException('$dependClass and $relation should be published for DynamicClassBehavior');
+        if (empty($this->dependClass) && empty($this->virtualOption)) {
+            throw new InvalidConfigException('$dependClass and $virtualOption should be published for DynamicClassBehavior');
         }
         if (empty($this->relationMethod)) {
-            $this->relationMethod = 'get' . ucfirst($this->relation);
+            $this->relationMethod = 'get' . ucfirst($this->virtualOption);
         }
     }
 
@@ -126,7 +127,7 @@ class InheritModelBehavior extends Behavior
     public function __get($name)
     {
         switch ($name) {
-            case $this->relation:
+            case $this->virtualOption:
                 return $this->inheritModel;
             default:
                 return parent::__get($name);
@@ -136,22 +137,22 @@ class InheritModelBehavior extends Behavior
     /** @inheritDoc */
     public function canGetProperty($name, $checkVars = true)
     {
-        return parent::canGetProperty($name, $checkVars) || $name === $this->relation;
+        return parent::canGetProperty($name, $checkVars) || $name === $this->virtualOption;
     }
 
     public function canSetProperty($name, $checkVars = true)
     {
-        return parent::canSetProperty($name, $checkVars) || $name === $this->relation;
+        return parent::canSetProperty($name, $checkVars) || $name === $this->virtualOption;
     }
 
     public function __set($name, $value)
     {
         switch ($name) {
-            case $this->relation:
+            case $this->virtualOption:
                 if (is_null($value) || $value instanceof $this->dependClass) {
                     return $this->_inheritModel = $value;
                 } else {
-                    throw new \InvalidArgumentException($this->relation . ' should be null or instance of ' . $this->dependClass);
+                    throw new \InvalidArgumentException($this->virtualOption . ' should be null or instance of ' . $this->dependClass);
                 }
             default:
                 return parent::__get($name);
