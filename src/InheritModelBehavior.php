@@ -3,6 +3,7 @@
 namespace sergin\yii2\behaviors;
 
 
+use InvalidArgumentException;
 use ReflectionClass;
 use Yii;
 use yii\base\Behavior;
@@ -140,11 +141,13 @@ class InheritModelBehavior extends Behavior
         return parent::canGetProperty($name, $checkVars) || $name === $this->virtualOption;
     }
 
+    /** @inheritDoc */
     public function canSetProperty($name, $checkVars = true)
     {
         return parent::canSetProperty($name, $checkVars) || $name === $this->virtualOption;
     }
 
+    /** @inheritDoc */
     public function __set($name, $value)
     {
         switch ($name) {
@@ -152,13 +155,12 @@ class InheritModelBehavior extends Behavior
                 if (is_null($value) || $value instanceof $this->dependClass) {
                     return $this->_inheritModel = $value;
                 } else {
-                    throw new \InvalidArgumentException($this->virtualOption . ' should be null or instance of ' . $this->dependClass);
+                    throw new InvalidArgumentException($this->virtualOption . ' should be null or instance of ' . $this->dependClass);
                 }
             default:
                 return parent::__get($name);
         }
     }
-
 
     public function initNewInheritModel()
     {
@@ -179,12 +181,9 @@ class InheritModelBehavior extends Behavior
             $this->_inheritModel = $this->owner->{$this->relationMethod};
 
             if (empty($this->_inheritModel) && $this->createDependObjectOnEmpty) {
-                if ($this->owner->isNewRecord) {
-                    $this->_inheritModel = $this->initNewInheritModel();
-                } else {
-                    if (empty($this->_inheritModel) && $this->createDependObjectOnEmpty) {
-                        $this->_inheritModel = $this->initNewInheritModel();
-                    }
+                $this->_inheritModel = $this->initNewInheritModel();
+                if (method_exists($this->owner, 'addRelation')) {
+                    $this->owner->addRelation($this->relationMethod, $this->_inheritModel);
                 }
             }
         }
