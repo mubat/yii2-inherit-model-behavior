@@ -33,8 +33,12 @@ class InheritModelBehavior extends Behavior
     /** @var ActiveRecord option in class that contains already saved related objects. By default, ActiveRecord getter */
     public $relationMethod;
 
+    /** @var string primary key name at inherit model */
     public $primaryKeyName = 'id';
-    public $linkAttribute = 'inherit_id';
+
+    /** @var string option name in owner model that contain primary key value of inherit model */
+    public $linkAttribute;
+
     /** @var  boolean Is depend class object should be initialize when no one items present */
     public $createDependObjectOnEmpty = true;
 
@@ -52,6 +56,9 @@ class InheritModelBehavior extends Behavior
         }
         if (empty($this->relationMethod)) {
             $this->relationMethod = 'get' . ucfirst($this->virtualOption);
+        }
+        if (empty($this->linkAttribute)) {
+            $this->linkAttribute = $this->virtualOption . '_id';
         }
     }
 
