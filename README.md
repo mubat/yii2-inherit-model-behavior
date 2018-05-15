@@ -46,6 +46,7 @@ or add "mubat/yii2-inherit-model-behavior": "~1.0" to the require section of you
             'virtualOption' => 'image', //required
             'linkAttribute' => 'image_id',
             'relationMethod' => 'savedImage',
+            'simpleRequest' => true,
         ];
         return $behaviors;
     }
@@ -55,5 +56,5 @@ or add "mubat/yii2-inherit-model-behavior": "~1.0" to the require section of you
     {
         return $this->hasOne(Image::class, ['id' => 'image_id']);
     }
-
 ```
+
