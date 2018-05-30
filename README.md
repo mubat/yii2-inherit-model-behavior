@@ -24,20 +24,29 @@ Extension supports 2 request formats:
 ]
 ```
 
-# Installation
+You can disable inherit object deletion if need.
+
+## Installation
 
 
 The preferred way to install this extension is through Composer.
 
-Either run php composer.phar require mubat/yii2-inherit-model-behavior "~1.0"
+Either run `php composer.phar require mubat/yii2-inherit-model-behavior "~1.0"`
 
-or add "mubat/yii2-inherit-model-behavior": "~1.0" to the require section of your composer.json
+or add `"mubat/yii2-inherit-model-behavior": "~1.0"` to the require section of your composer.json
 
 
 ## Usage examples
 * Options:
-
-    `deleteWithOwner` - with this option you can disable/enable run `delete()` action on inherit object. _Default: true_ (It also can do in any project's part or depending of project's logic)
+    * __`dependClass`__ [__required__ _string_] - target class name;
+    * __`dependClassInitConfig`__ [_array_] - some init configuration for target class. See `\yii\app\Yii::createObject()` 
+    * __`virtualOption`__ [__required__ _string_] - option name that will be use at project
+    * __`relationMethod`__ [_string_] - getter that returns with `\yii\db\ActiveQuery` object. By default, `get[virtualOption]()`
+    * __`primaryKeyName`__ [_string_] - key name at inherit model. Default `"id"`
+    * __`linkAttribute`__ [_string_] - column name in owner table for connect with inherit table. By default, `[virtualOption]_id`
+    * __`createDependObjectOnEmpty`__ [_boolean_] - you can disable empty inherit object creation if need. By default, _true_
+    * __`simpleRequest`__ [_boolean_] - How need to parse simple options: like 'bar' (_true_) or like 'Foo[bar]' (_false_) at request. By default, _false_ 
+    * __`deleteWithOwner`__ - with this option you can disable/enable run `delete()` action on inherit object. _Default: true_ (It also can change status during processing on the fly)
     
 * Usage:
 ```php
