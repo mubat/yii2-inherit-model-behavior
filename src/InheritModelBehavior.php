@@ -42,6 +42,9 @@ class InheritModelBehavior extends Behavior
     /** @var  boolean Is depend class object should be initialize when no one items present */
     public $createDependObjectOnEmpty = true;
 
+    /** @var boolean is need run inherit model's `delete()` when owner deleting */
+    public $deleteWithOwner = true;
+
     /** @var  ActiveRecord */
     protected $_inheritModel;
 
@@ -133,12 +136,14 @@ class InheritModelBehavior extends Behavior
     }
 
     /**
-     * @return false|int|null count of deleted records, false if nothing to delete, null if no inherit model exist
+     * @return false|int|null count of deleted records, false if nothing to delete,
+     * null if no inherit model exist or deletion disabled
      * @throws \Throwable see ActiveRecord::delete()
      * @throws \yii\db\StaleObjectException see ActiveRecord::delete()
      */
     public function delete()
     {
+        if (!$this->deleteWithOwner) return null;
         return $this->inheritModel ? $this->inheritModel->delete() : null;
     }
 

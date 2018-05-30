@@ -35,6 +35,10 @@ or add "mubat/yii2-inherit-model-behavior": "~1.0" to the require section of you
 
 
 ## Usage examples
+* Options:
+
+    `deleteWithOwner` - with this option you can disable/enable run `delete()` action on inherit object. _Default: true_ (It also can do in any project's part or depending of project's logic)
+    
 * Usage:
 ```php
     public function behaviors()
@@ -47,6 +51,7 @@ or add "mubat/yii2-inherit-model-behavior": "~1.0" to the require section of you
             'linkAttribute' => 'image_id',
             'relationMethod' => 'savedImage',
             'simpleRequest' => true,
+            'deleteWithOwner' => true,
         ];
         return $behaviors;
     }
