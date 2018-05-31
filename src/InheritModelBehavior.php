@@ -201,12 +201,12 @@ class InheritModelBehavior extends Behavior
     protected function getInheritModel()
     {
         if (empty($this->_inheritModel)) {
-            $this->_inheritModel = $this->owner->{$this->relationMethod};
+            $this->_inheritModel = $this->owner->{$this->relationMethod}()->findFor($this->virtualOption, $this->owner);
 
             if (empty($this->_inheritModel) && $this->createDependObjectOnEmpty) {
                 $this->_inheritModel = $this->initNewInheritModel();
                 if (method_exists($this->owner, 'addRelation')) {
-                    $this->owner->addRelation($this->relationMethod, $this->_inheritModel);
+                    $this->owner->addRelation($this->virtualOption, $this->_inheritModel);
                 }
             }
         }
