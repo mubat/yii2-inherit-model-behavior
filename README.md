@@ -58,7 +58,7 @@ or add `"mubat/yii2-inherit-model-behavior": "~1.0"` to the require section of y
             'dependClass' => Image::class, //required
             'virtualOption' => 'image', //required
             'linkAttribute' => 'image_id',
-            'relationMethod' => 'savedImage',
+            'relationMethod' => 'getSavedImage',
             'simpleRequest' => true,
             'deleteWithOwner' => true,
         ];
